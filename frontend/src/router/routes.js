@@ -6,8 +6,16 @@ import RecipeForm from '@/pages/RecipeForm.vue'
 
 const routes = [
    { path: '/', component: Home, name: 'home'},
-   { path: '/detail', component: Detail, name: 'detail'},
-   { path: '/recipeForm', component: RecipeForm, name: 'form'},
+   { path: '/recipe/:id', component: Detail, name: 'detail'},
+   { path: '/recipeForm', component: RecipeForm, name: 'form',
+      children: [
+         {
+            path: '/edit/:id',
+            component: RecipeForm,
+            name: 'editForm'
+         }
+      ] 
+},
 ]
 
 export default routes;

@@ -17,7 +17,7 @@ class RecipeController extends Controller
         try{
             // dd(request(['category']));
             return Recipe::filter(request(['category'])
-            )->paginate(6);
+            )->with('category:id,name')->orderBy('created_at','desc')->paginate(6);
             
         }catch(Exception $e){
             return response()->json([
@@ -68,7 +68,7 @@ class RecipeController extends Controller
     }
 
     public function update($id){
-
+    
         try{
             $recipe = Recipe::find($id);
             
@@ -82,9 +82,9 @@ class RecipeController extends Controller
             $validator = Validator::make(request()->all(),[
                 'title' => 'required',
                 'description' => 'required',
-                'image' => 'required',
+                'image' => 'nullable',
                 'category_id' => ['required', Rule::exists('categories','id')],
-            ]);
+            ]);            
 
             if($validator->fails()){
             ## $flatteredError change the error massage from this "title": [ "The title field is required. "] to that  "title": "The title field is required."
@@ -138,11 +138,11 @@ class RecipeController extends Controller
 
     public function upload(){
        
-        try{
+        try{            
             $validator = Validator::make(request()->all(),[
-                'image' => ['required', 'image']
+                'image' => 'nullable'
             ]);
-    
+            
             if($validator->fails()){
                 ## $flatteredError change the error massage from this "title": [ "The title field is required. "] to that  "title": "The title field is required."
     
