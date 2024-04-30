@@ -13,10 +13,20 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
+
+     /*
     public function run(): void
     {
         Category::factory(5)
         ->has(Recipe::factory()->count(20), 'recipes')
         ->create();
+    }
+    */
+
+    public function run(): void
+    {
+        $this->call([
+            CategorySeeder::class
+        ]);
     }
 }

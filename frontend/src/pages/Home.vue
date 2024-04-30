@@ -4,11 +4,13 @@
       <div>
         <router-link :to="{name: 'home'}" class="text-3xl text-green-400 font-semibold">My Recipe</router-link>
       </div>
-      <div>
+      <div class="flex justify-between gap-3">
         <router-link :to="{name: 'form'}" class="px-3 py-3 rounded-lg bg-red-400 hover:opacity-[0.85] transition-all duration-300 text-white flex items-center gap-2 hover:scale-105">
           <i class="fa-solid fa-plus"></i>
           <div>Add Recipe</div>
         </router-link>  
+
+        <a href="" class="px-3 py-3 rounded-lg bg-red-400 hover:opacity-[0.85] transition-all duration-300 text-white flex items-center gap-2 hover:scale-105">Add Category</a>
       </div>
     </nav>
   </header>
@@ -20,10 +22,10 @@
     </h1>
 
     <div class='justify-center md:flex hidden'>
-        <nav class="bg-red-400 text-white grid grid-flow-col text-center mt-14">
-          <div @click="filterRecipesByCategory('')" class="cursor-pointer hover:bg-white hover:text-red-400 transition-all duration-500 w-[120px] p-3 active">All recipes</div>
+        <nav class="bg-red-400 text-white grid grid-flow-col text-center mt-14 rounded-md">
+          <div @click="filterRecipesByCategory('')" class="cursor-pointer hover:bg-white hover:text-red-400 hover:rounded-md transition-all duration-500 w-[120px] p-3 active">All recipes</div>
           <template v-for="category in categories" :key="category.id">
-            <div @click="filterRecipesByCategory(category.name)" class="cursor-pointer hover:bg-white hover:text-red-400 transition-all duration-500 w-[120px] p-3 active">{{ category.name }}</div>
+            <div @click="filterRecipesByCategory(category.name)" class="cursor-pointer hover:bg-white hover:text-red-400 hover:rounded-md transition-all duration-500 w-[120px] p-3 active">{{ category.name }}</div>
           </template>
         </nav>
     </div>
@@ -44,9 +46,13 @@
           <div class="w-full bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg active:shadow-none transition-all duration-500 max-h-[500px]">
             <img class="h-[300px] mb-4 rounded-t-lg w-full object-cover"  :src="'http://localhost:8000' + recipe?.image" alt="product image" />
             <div class="px-5 pb-5">
-              <h5 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-1">
-                {{ recipe.title }}
-              </h5>
+              <div class="flex justify-between">
+                <h5 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-1">
+                  {{ recipe.title }}
+                </h5>
+                <h5 class="bg-red-400 px-[10px] py-[5px] rounded-md text-white">{{ recipe.category.name }}</h5>
+              </div>
+            
               <p class="line-clamp-2 mt-2 text-gray-500">
                 {{ recipe.description }}
               </p>
@@ -63,7 +69,7 @@
               <div class="h-[5px] w-[80%] mt-2 bg-slate-700 rounded-md"></div>
             </div>
           </div>
-      </div>
+      </div>  
     </div>
     <div class="flex gap-4 justify-center">
       <button :class="link.label === currentPage ? 'bg-red-500 text-white px-[10px] py-[5px] rounded-sm' : 'px-[10px] py-[5px] rounded-sm'"  @click="getPaginatedRecipes(link.url)" v-for="link in links" :key="link.label" v-html="link.label"></button>
