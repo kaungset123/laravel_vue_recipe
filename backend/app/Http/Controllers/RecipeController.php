@@ -15,7 +15,6 @@ class RecipeController extends Controller
 
     public function index(){
         try{
-            // dd(request(['category']));
             return Recipe::filter(request(['category'])
             )->with('category:id,name')->orderBy('created_at','desc')->paginate(6);
             
@@ -67,11 +66,11 @@ class RecipeController extends Controller
         }
     }
 
-    public function update($id){
+    public function update(Request $request,$id){
     
         try{
             $recipe = Recipe::find($id);
-            
+
             if(!$recipe){
                 return response()->json([
                     'message' => "recipe not fond",
@@ -104,6 +103,7 @@ class RecipeController extends Controller
             $recipe->image = request('image');
             $recipe->category_id = request('category_id');
             $recipe->save();
+
 
             return response()->json($recipe, 201);
         }catch(Exception $e){
@@ -174,14 +174,25 @@ class RecipeController extends Controller
 
     public function destroy($id){
         try{
-        //   dd("destroy function is working!");
         $recipe = Recipe::find($id);
+        $img = $recipe->image;
+
+        $filename = substr($img, strrpos($img, '/') + 1);
+
         if(!$recipe){
             return response()->json([
                 'message' => "recipe not fond",
                 'status' => 404
             ],404);
         }
+
+        if(!empty($filename)){
+            $img_path = public_path('storage/recipes/' . $filename);
+            if(file_exists($img_path)){
+                unlink($img_path);
+            }                
+        }
+
         $recipe->delete();
         return $recipe;
         }catch(Exception $e){

@@ -76,7 +76,7 @@
           placeholder="Chicken Curry..."
           v-model="data.title"
         />
-        <!-- <span class="text-red-500 text-xs ml-2 tracking-wider">title is required!</span> -->
+        <span v-if="error" class="text-red-500 text-sm ml-2 tracking-wider">{{ error.title }}</span>
       </div>
       <div>
         <label
@@ -91,7 +91,9 @@
           placeholder="This is created..."
           v-model="data.description"
         ></textarea>
-        <!-- <span class="text-red-500 text-xs ml-2 tracking-wider">title is required!</span> -->
+        <span v-if="error" class="text-red-500 text-sm ml-2 tracking-wider">
+          {{ error.description }}
+        </span>
       </div>
       <div class="mb-5">
         <label
@@ -107,6 +109,7 @@
             <option :value="category.id">{{ category.name }}</option>
           </template>
         </select>
+        <span v-if="error"class="text-red-500 text-sm ml-2 tracking-wider">{{ error.category_id }}</span>
       </div>
       <input 
         @change="getRecipeImage"
@@ -114,7 +117,7 @@
         class="block my-8"
         accept="image/png, image/jpeg" 
       />
-
+      <span v-if="error"class="text-red-500 text-sm ml-2 tracking-wider">{{ error.image }}</span>
       <div v-if="data.image">
         <img
           :src="'http://localhost:8000' + this.data.image"
@@ -142,6 +145,7 @@ export default {
         category_id: "",
         image: "",
       },
+      error:{},
     };
   },
   methods: {
@@ -176,7 +180,6 @@ export default {
           }
         );
         this.data.image = img.path;
-
         }      
           if (this.$route.params?.id) {
             // Edit process
@@ -192,8 +195,13 @@ export default {
             );
             if (res) {
               console.log(res);
+
+              if(res.status == 201){
+                this.$store.commit('showEditMsg');
+                this.$router.push({ name: 'home'});
+              }
             }
-            this.$router.push({ name: 'home'});
+
           } else {
             // Create process
             let res = await this.$axios.post("/api/recipes", this.data, {
@@ -202,12 +210,15 @@ export default {
               },
             });
             if (res) {
-              console.log(res);
+              if(res.status == 201){
+                this.$store.commit('showCreateMsg');
+                this.$router.push({ name: 'home'});
+              }
             }
-            this.$router.push({ name: 'home'});
           }
       } catch (e) {
-        console.log(e);
+        this.error = e.response.data.error;
+        console.log(this.error);
       }
     },
     async getSingleRecipe(id) {
@@ -215,7 +226,6 @@ export default {
         let { data } = await this.$axios.get(`/api/recipes/${id}`);
         if (data) {
           this.data = data;
-          console.log(this.data.image);
         }
       } catch (e) {
         console.log(e);
