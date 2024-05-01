@@ -12,12 +12,13 @@
         </div>
       </nav>
     </header>
-  
-    <main class="flex gap-5 items-center md:flex-row flex-col xl:px-[80px] md:px-[50px] px-[20px] my-11">
-        <img v-if="!gettingDetail" class="max-h-[400px] max-w-[400px] object-cover rounded-md" :src="'http://localhost:8000' + recipe.image"  alt="product image" />
-        <div v-else class="max-h-[400px] max-w-[400px] rounded-md bg-slate-700">>
-        </div>
-        <div class="space-y-5">
+   
+    <main v-if="!gettingDetail" class="flex gap-5 items-center md:flex-row flex-col xl:px-[80px] md:px-[50px] px-[20px] my-11">
+      <div class="h-[400px] w-[400px] ">
+        <img  class="h-[400px] w-[400px] object-cover rounded-md" :src="'http://localhost:8000' + recipe.image"  alt="product image" />
+      </div>
+
+        <div  class="space-y-5">
           <h5 class="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {{ recipe.title }}
           </h5>
@@ -27,6 +28,23 @@
           <div class="flex gap-4 border-t py-5 justify-end">
             <router-link :to="{ name: 'editForm', params: { id: recipe.id} }" class="bg-blue-400 text-white px-4 py-2 rounded-lg hover:scale-110 duration-200">Edit</router-link>
             <button @click="deleteRecipe(recipe.id)" class="bg-red-500 text-white px-3 py-2 rounded-lg hover:scale-110 duration-200">Delete</button>
+          </div>
+        </div>
+    </main>
+
+    <main v-else class="flex gap-5 items-center md:flex-row flex-col xl:px-[80px] md:px-[50px] px-[20px] my-11">
+      <div  class="animate-pulse h-[400px] w-[400px] rounded-md bg-slate-700">
+      </div>
+      <div  class=" animate-pulse">
+          <div class="w-[100px] h-[15px] bg-slate-700">
+          </div>
+          <div class="w-[300px] h-[10px] mt-10 bg-slate-700">
+          </div>
+          <div class="w-[300px] h-[10px] mt-6 bg-slate-700">
+          </div>
+          <div class="flex gap-4 border-t py-5 mt-10">
+            <button class="w-[100px] h-[40px] rounded-md bg-slate-700"></button>
+            <button class="w-[100px] h-[40px] rounded-md bg-slate-700"></button>
           </div>
         </div>
     </main>
@@ -54,9 +72,17 @@
         }
       },
       async deleteRecipe(id){
-        await this.$axios.delete('/api/recipes/' + id);
-        this.$router.push({ name: 'home'});
-      }
+        if(window.confirm('Are you sure to delete this recipe ')){
+          let res = await this.$axios.delete('/api/recipes/' + id);
+          if(res){
+            console.log(res)
+            if(res.status == 200){
+              this.$store.commit('showDeleteMsg');
+              this.$router.push({ name: 'home'});
+            }
+          }
+        }
+        }     
     },
     mounted(){
       this.getSingleRecipe();

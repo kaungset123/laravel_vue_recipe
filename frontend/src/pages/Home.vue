@@ -1,8 +1,38 @@
 <template>
+  <div class="relative">
+    <div v-if="editshow" class="absolute">
+      <p  class=" text-center text-white bg-green-400 py-3 px-5 rounded-md fixed right-5 bottom-7"  x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show">
+         A Recipe Edited successfully
+      </p>
+    </div>
+    <div v-if="createshow" class="absolute">
+      <p  class=" text-center text-white bg-green-400 py-3 px-5 rounded-md fixed right-5 bottom-7"  x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show">
+         A Recipe Created successfully
+      </p>
+    </div>
+    <div v-if="deleteshow" class="absolute z-10">
+      <p  class=" text-center text-white bg-green-400 py-3 px-5 rounded-md fixed right-5 bottom-7"  x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show">
+         A Recipe Deleted successfully
+      </p>
+    </div>
      <header>
     <nav class="flex justify-between items-center h-[80px] border-b xl:px-[80px] md:px-[50px] px-[20px]">
-      <div>
-        <router-link :to="{name: 'home'}" class="text-3xl text-green-400 font-semibold">My Recipe</router-link>
+      <div class="relative sm:block hidden ms-2">
+        <router-link :to="{name: 'home'}" class="text-3xl ">
+          <img :src="imgUrl" alt="logoImg" class="w-[100px] h-[100px]">
+          <div class="absolute top-9 left-[-20px] w-full font-bold">
+            <span class="text-[26px] ">Burmese</span>
+            <span class="text-[18px] ms-2 text-green-500">Cousine</span>
+          </div>
+        </router-link>
+      </div>
+      <div class="block sm:hidden">
+        <router-link :to="{name: 'home'}" class="text-3xl ">
+          <div class=" top-9  w-full font-bold">
+            <span class="text-[26px] ">Burmese</span>
+            <p class="text-[18px] ms-6 text-green-500">Cousine</p>
+          </div>
+        </router-link>
       </div>
       <div class="flex justify-between gap-3">
         <router-link :to="{name: 'form'}" class="px-3 py-3 rounded-lg bg-red-400 hover:opacity-[0.85] transition-all duration-300 text-white flex items-center gap-2 hover:scale-105">
@@ -39,6 +69,8 @@
       </select>
     </div>
 
+  
+
     <!-- recipe -->
     <div class="my-20 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-12">
       <template v-if="!gettingRecipe" v-for="recipe in recipes" :key="recipe.id">
@@ -71,24 +103,45 @@
           </div>
       </div>  
     </div>
-    <div class="flex gap-4 justify-center">
+
+    <!-- no recipe -->
+    <div v-if="recipes.length == 0  && !gettingRecipe" class="flex justify-center text-white mb-10">
+      <router-link :to="{ name: 'form' }" class="bg-red-500 py-4 px-10 animate-pulse rounded-sm text-center cursor-pointer">
+        There is no recipes yet
+        <p>Add recipe?</p>
+      </router-link>
+    </div>
+    
+    <div v-if="recipes.length > 0" class="flex gap-4 justify-center">
       <button :class="link.label === currentPage ? 'bg-red-500 text-white px-[10px] py-[5px] rounded-sm' : 'px-[10px] py-[5px] rounded-sm'"  @click="getPaginatedRecipes(link.url)" v-for="link in links" :key="link.label" v-html="link.label"></button>
     </div>
   </main>
+  </div>
 </template>
 
 <script>
+import image from '../logo/logo.png';
+
 export default{
   data() {
     return {
+      imgUrl: image,
       recipes: [],
       categories: [],
       gettingRecipe: true,
       links: [],
-      currentPage: 1
+      currentPage: 1,
+      editshow: this.$store.state.editMsg,
+      createshow: this.$store.state.createMsg,
+      deleteshow: this.$store.state.deleteMsg,
     }
   },
   methods: {
+    increment() {
+    this.$store.commit('increment')
+    console.log(this.$store.state.count)
+    this.count = this.$store.state.count;
+  },
     async getRecipes() {
       try{
         let res = await this.$axios.get('/api/recipes');
