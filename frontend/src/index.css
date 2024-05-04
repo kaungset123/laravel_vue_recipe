@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    .input-style {
+        @apply shadow-sm bg-gray-50 border border-gray-300 block w-full text-sm rounded-md mt-2 px-3 py-2 focus:outline-blue-300;
+    }
+    .button-style {
+        @apply bg-gradient-to-b from-sky-500 to-sky-700 hover:bg-gradient-to-bl from-sky-300 to-sky-700 hover:scale-105  ease-in-out duration-300  text-sm text-white rounded-md ;
+    }
+}

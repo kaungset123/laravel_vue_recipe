@@ -6,7 +6,10 @@
         </div>
         <div>
           <router-link :to="{name : 'form'}" class="px-3 py-3 rounded-lg bg-red-400 hover:opacity-[0.85] transition-all duration-200 text-white flex items-center gap-2 hover:scale-105">
-            <i class="fa-solid fa-plus"></i>
+            <font-awesome-icon
+            icon="fa-solid fa-add"
+            class="text-white text-sm"
+          />
             <div>Add Recipe</div>
           </router-link>
         </div>
@@ -14,8 +17,8 @@
     </header>
    
     <main v-if="!gettingDetail" class="flex gap-5 items-center md:flex-row flex-col xl:px-[80px] md:px-[50px] px-[20px] my-11">
-      <div class="h-[400px] w-[400px] ">
-        <img  class="h-[400px] w-[400px] object-cover rounded-md" :src="'http://localhost:8000' + recipe.image"  alt="product image" />
+      <div class="w-full">
+        <img  class="w-full  object-cover rounded-md" :src="'http://localhost:8000' + recipe.image"  alt="product image" />
       </div>
 
         <div  class="space-y-5">
