@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Http\Responses\ValidationErrorResponse;
 
 class RecipeController extends Controller
 {
@@ -37,17 +38,8 @@ class RecipeController extends Controller
                 'category_id' => ['required', Rule::exists('categories','id')],
             ]);
 
-            if($validator->fails()){
-            ## $flatteredError change the error massage from this "title": [ "The title field is required. "] to that  "title": "The title field is required."
-
-                $flatteredErrors = collect($validator->errors())->flatMap(function($e, $field) {
-                    return [$field => $e[0]];
-                });
-
-                return response()->json([
-                    'error' => $flatteredErrors,
-                    'status' => 400
-                ],400);
+            if ($validator->fails()) {
+                return new ValidationErrorResponse($validator);
             }
 
             $recipe  = new Recipe();
@@ -85,17 +77,8 @@ class RecipeController extends Controller
                 'category_id' => ['required', Rule::exists('categories','id')],
             ]);            
 
-            if($validator->fails()){
-            ## $flatteredError change the error massage from this "title": [ "The title field is required. "] to that  "title": "The title field is required."
-
-                $flatteredErrors = collect($validator->errors())->flatMap(function($e, $field) {
-                    return [$field => $e[0]];
-                });
-
-                return response()->json([
-                    'error' => $flatteredErrors,
-                    'status' => 400
-                ],400);
+            if ($validator->fails()) {
+                return new ValidationErrorResponse($validator);
             }
 
             $recipe->title = request('title');
@@ -143,18 +126,9 @@ class RecipeController extends Controller
                 'image' => 'nullable'
             ]);
             
-            if($validator->fails()){
-                ## $flatteredError change the error massage from this "title": [ "The title field is required. "] to that  "title": "The title field is required."
-    
-                    $flatteredErrors = collect($validator->errors())->flatMap(function($e, $field) {
-                        return [$field => $e[0]];
-                    });
-    
-                    return response()->json([
-                        'error' => $flatteredErrors,
-                        'status' => 400
-                    ],400);
-                }
+            if ($validator->fails()) {
+                return new ValidationErrorResponse($validator);
+            }
     
            $path = '/storage/' . request('image')->store('/recipes');
 

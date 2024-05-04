@@ -218,7 +218,6 @@ export default {
           }
       } catch (e) {
         this.error = e.response.data.error;
-        console.log(this.error);
       }
     },
     async getSingleRecipe(id) {
